@@ -92,8 +92,9 @@ void deletebeg()
 	else
 	{
 		struct node *ptr;
-		ptr=head->next;
-		head=ptr;
+		ptr=head;
+		head=ptr->next;
+		free(ptr);
 		display();
 	}
 }
@@ -154,44 +155,39 @@ void deletepos()
 
 void search()
 {
-	int data,i=0,flag=0;
-	struct node *ptr;
+	int data,i=0;
+	struct node *temp;
 	printf("\nEnter the data to be searched:");
 	scanf("%d",&data);
-	ptr=head;
-	while(ptr->next!=NULL)
+	temp=head;
+	while(temp->next!=NULL)
 	{
-		if(ptr->data==data)
+		if(temp->data==data)
 		{
 			printf("\nData found at the index: %d",i);
-			flag=0;
-			break;
+			return;
 		}
-		ptr=ptr->next;
+		temp=temp->next;
 		i++;	
 	}
-	if(flag==1)
-	{
-		printf("\nData not found");
-	}
-	
+	printf("\nData not found");
 }
 
 void display()
 {
-	struct node *ptr;
-	ptr=head;
-	if(ptr==NULL)
+	struct node *temp;
+	temp=head;
+	if(temp==NULL)
 	{
 		printf("\nLinked list is empty");
 	}
 	else
 	{
-		while(ptr!=NULL)
+		while(temp!=NULL)
 		{
 			printf("\nLinked list elements are:");
-			printf(" %d ",ptr->data);
-			ptr=ptr->next;
+			printf(" %d ",temp->data);
+			temp=temp->next;
 		}
 	}
 }
@@ -199,7 +195,7 @@ void display()
 void main()
 {
 	
-	int choice =0;  
+	int choice;  
     while(choice != 9)   
     {  
         printf("\n\n*********Main Menu*********\n");  
