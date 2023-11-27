@@ -7,7 +7,7 @@ int arr[max],n,i;
 void create()
 {
 	int ele;
-	if(n>max && n<0)
+	if(n>max || n<0)
 	{
 		printf("\nMaximum size of list is 10");
 		return;
