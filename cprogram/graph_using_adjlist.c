@@ -73,55 +73,33 @@ void create_vertex(char name[10])
 
 void add_edge(char src[10], char des[10], int weight)
 {
-    struct node *temp, *srcNode = NULL, *desNode = NULL;
-    if (head == NULL)
-    {
-        printf("\nGraph is empty.");
-        return;
-    }
-
-    temp = head;
-    while (temp != NULL)
-    {
-        if (strcmp(temp->data, src) == 0)
-        {
-            srcNode = temp;
-        }
-        else if (strcmp(temp->data, des) == 0)
-        {
-            desNode = temp;
-        }
-
-        temp = temp->next;
-    }
-
-    if (srcNode == NULL)
-    {
-        printf("\nSource vertex not found.");
-        return;
-    }
-
-    if (desNode == NULL)
-    {
-        printf("\nDestination vertex not found.");
-        return;
-    }
-
-    struct node *newEdge = createnode(des, weight);
-
-    if (srcNode->adj == NULL)
-    {
-        srcNode->adj = newEdge;
-    }
-    else
-    {
-        temp = srcNode->adj;
-        while (temp->adj != NULL)
-        {
-            temp = temp->adj;
-        }
-        temp->adj = newEdge;
-    }
+	struct node *temp;
+	if(head==NULL)
+	{
+		printf("\nGraph is empty.");
+		return;
+	}
+	if((check(src)==1)&&(check(des)==1))
+	{
+		temp=head;
+		while(temp->next!=NULL)
+		{
+			if(strcmp(temp->data,src)==0)
+			{
+				while(temp->adj!=NULL)
+				{
+					temp=temp->adj;
+				}
+				temp->adj=createnode(des,weight);
+				break;
+			}
+			temp=temp->next;
+		}
+	}
+	else
+	{
+		printf("\nEighter source or destination is not found.");
+	}
 }
 
 void display()
