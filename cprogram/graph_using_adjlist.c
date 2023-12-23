@@ -5,180 +5,175 @@
 struct node
 {
     char data[10];
-    struct node *adjvert;
     struct node *next;
-    int wei;
+    struct node *adj;
+    int weight;
 };
 
 struct node *head = NULL;
 
-struct node *createvertex(char vert[10], int weight)
+struct node *createnode(char name[10], int weight)
 {
-    struct node *newvert = (struct node *)malloc(sizeof(struct node));
-    strcpy(newvert->data, vert);
-    newvert->adjvert = NULL;
-    newvert->next = NULL; 
-    newvert->wei = weight;
-    return newvert;
+    struct node *newnode = (struct node *)malloc(sizeof(struct node));
+    strcpy(newnode->data, name);
+    newnode->adj = NULL;
+    newnode->next = NULL;
+    newnode->weight = weight;
+    return newnode;
 }
 
-void addvert(char data[10])
+int check(char name[10])
 {
+    int f = 0;
     struct node *temp;
     temp = head;
     while (temp != NULL)
     {
-        if (strcmp(temp->data, data) == 0)
+        if (strcmp(temp->data, name) == 0)
         {
-            printf("\nYour vertex is already present in the graph.");
-            return;
+            f = 1;
+            break;
         }
         temp = temp->next;
     }
-    temp = head;
-    if (head == NULL)
+    if (f == 1)
     {
-        head = createvertex(data, 0);
+        return 1;
     }
     else
     {
+        return 0;
+    }
+}
+
+void create_vertex(char name[10])
+{
+    struct node *temp;
+    if (check(name) == 1)
+    {
+        printf("\nVertex already exists");
+        return;
+    }
+    if (head == NULL)
+    {
+        head = createnode(name, 0);
+        printf("\nVertex created");
+    }
+    else
+    {
+        temp = head;
         while (temp->next != NULL)
         {
             temp = temp->next;
         }
-        temp->next = createvertex(data, 0);
+        temp->next = createnode(name, 0);
+        printf("\nVertex created");
     }
 }
 
-void addedge(char src[10], char des[10], int weight)
+void add_edge(char src[10], char des[10], int weight)
 {
-    int f = 0;
-    struct node *temp;
-    struct node *ptr;
-    struct node *temp1;
-    temp1 = head;
+    struct node *temp, *srcNode = NULL, *desNode = NULL;
     if (head == NULL)
     {
-        printf("\nRequired number of vertices is less to perform this operation");
+        printf("\nGraph is empty.");
         return;
+    }
+
+    temp = head;
+    while (temp != NULL)
+    {
+        if (strcmp(temp->data, src) == 0)
+        {
+            srcNode = temp;
+        }
+        else if (strcmp(temp->data, des) == 0)
+        {
+            desNode = temp;
+        }
+
+        temp = temp->next;
+    }
+
+    if (srcNode == NULL)
+    {
+        printf("\nSource vertex not found.");
+        return;
+    }
+
+    if (desNode == NULL)
+    {
+        printf("\nDestination vertex not found.");
+        return;
+    }
+
+    struct node *newEdge = createnode(des, weight);
+
+    if (srcNode->adj == NULL)
+    {
+        srcNode->adj = newEdge;
     }
     else
     {
-        while (temp1 != NULL)
+        temp = srcNode->adj;
+        while (temp->adj != NULL)
         {
-            if (strcmp(temp1->data, src) == 0)
-            {
-                ptr = temp1;
-
-                temp = head;
-                while (temp != NULL)
-                {
-                    if (strcmp(temp->data, des) == 0)
-                    {
-                        f = 1;
-                        break;
-                    }
-                    temp = temp->next;
-                }
-                if (f == 1)
-                {
-                    if (ptr->adjvert == NULL)
-                    {
-                        ptr->adjvert = createvertex(des, weight);
-                    }
-                    else
-                    {
-                        struct node *tempAdj = ptr->adjvert;
-                        while (tempAdj->next != NULL)
-                        {
-                            tempAdj = tempAdj->next;
-                        }
-                        tempAdj->next = createvertex(des, weight);
-                    }
-                }
-            }
-            temp1 = temp1->next;
+            temp = temp->adj;
         }
-    }
-    if (f == 0)
-    {
-        printf("\nSource is not found");
+        temp->adj = newEdge;
     }
 }
 
 void display()
 {
     struct node *temp, *ptr;
+    printf("\nElements in graph are: ");
     temp = head;
-    if (head == NULL)
+    while (temp != NULL)
     {
-        printf("\nNO graph is created yet.");
-        return;
-    }
-    else
-    {
-        printf("\nDisplaying graph\n\n");
-        while (temp != NULL)
+        printf("\n%s", temp->data);
+        ptr = temp->adj;
+        while (ptr != NULL)
         {
-            printf("\n%s", temp->data);
-            ptr = temp->adjvert;
-            while (ptr != NULL)
-            {
-                printf("-(%d)->%s", ptr->wei, ptr->data);
-                ptr = ptr->next;
-            }
-            temp = temp->next;
+            printf("-(%d)->%s", ptr->weight, ptr->data);
+            ptr = ptr->adj;
         }
+        temp = temp->next;
     }
 }
 
-int main()
+void main()
 {
     int ch, weight;
-    char ver[10], src[10], des[10];
-    struct node *temp;
+    char src[10], des[10], name[10];
     while (1)
     {
-        printf("\n\n\tMAIN MENU\n1. Add vertex\n2. Add edge\n3. Display\n4. Exit\nEnter your choice: ");
+        printf("\n\n\tMAIN MENU\n1. Create vertex\n2. Create edge\n3. Display\n4. Exit\nEnter your choice: ");
         scanf("%d", &ch);
         switch (ch)
         {
         case 1:
-            printf("\nEnter vertex string: ");
-            scanf(" %s", ver);
-            addvert(ver);
+            printf("\nEnter vertex name: ");
+            scanf("%s", name);
+            create_vertex(name);
             break;
         case 2:
-            temp = head;
-            if (head == NULL)
-            {
-                printf("\nNo vertices available.");
-                break;
-            }
-            printf("\nAvailable vertices in graph are: ");
-            while (temp != NULL)
-            {
-                printf("%s\t", temp->data);
-                temp = temp->next;
-            }
-            printf("\nEnter source: ");
-            scanf(" %s", src);
-            printf("\nEnter destination: ");
-            scanf(" %s", des);
-            printf("\nEnter weight: ");
+            printf("\nEnter source name: ");
+            scanf("%s", src);
+            printf("\nEnter destination name: ");
+            scanf("%s", des);
+            printf("\nEnter edge weight: ");
             scanf("%d", &weight);
-            addedge(src, des, weight);
+            add_edge(src, des, weight);
             break;
         case 3:
             display();
             break;
         case 4:
             exit(0);
-            break;
         default:
-            printf("\nEnter valid input");
+            printf("\nEnter valid input.");
             break;
         }
     }
-    return 0;
 }
