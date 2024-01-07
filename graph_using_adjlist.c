@@ -82,7 +82,7 @@ void add_edge(char src[10], char des[10], int weight)
 	if((check(src)==1)&&(check(des)==1))
 	{
 		temp=head;
-		while(temp->next!=NULL)
+		while(temp!=NULL)
 		{
 			if(strcmp(temp->data,src)==0)
 			{
@@ -98,7 +98,7 @@ void add_edge(char src[10], char des[10], int weight)
 	}
 	else
 	{
-		printf("\nEighter source or destination is not found.");
+		printf("\nEither source or destination is not found.");
 	}
 }
 
